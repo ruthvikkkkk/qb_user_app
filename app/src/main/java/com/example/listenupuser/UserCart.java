@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +39,6 @@ public class UserCart extends AppCompatActivity {
 
         SharedPreferences cartPreferences = getSharedPreferences("cart", MODE_PRIVATE);
         CartDto cartDto = gson.fromJson(cartPreferences.getString("session cart", null), CartDto.class);
-        //((TextView) findViewById(R.id.tv_cart)).setText(cartDto.getCartId());
 
         RecyclerView recyclerView = findViewById(R.id.rv_cart);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
@@ -63,21 +63,26 @@ public class UserCart extends AppCompatActivity {
         findViewById(R.id.bt_cart_place_order).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cartApiInterface.buyCart(cartDto.getCartId()).enqueue(new Callback<Order>() {
-                    @Override
-                    public void onResponse(Call<Order> call, Response<Order> response) {
-                        Toast.makeText(myApplication, "Order Placed", Toast.LENGTH_SHORT).show();
-                    }
+                if (!getSharedPreferences("init", MODE_PRIVATE).getBoolean("isGuest", true)) {
+                    cartApiInterface.buyCart(MyApplication.email).enqueue(new Callback<Order>() {
+                        @Override
+                        public void onResponse(Call<Order> call, Response<Order> response) {
+                            Toast.makeText(myApplication, "Order Placed", Toast.LENGTH_SHORT).show();
+                        }
 
-                    @Override
-                    public void onFailure(Call<Order> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<Order> call, Throwable t) {
 
-                    }
-                });
-                cartDto.setCartItems(new ArrayList<>());
-                cartPreferences.edit().putString("session cart", gson.toJson(cartDto));
-                cartPreferences.edit().commit();
-                finish();
+                        }
+                    });
+                    cartDto.setCartItems(new ArrayList<>());
+                    cartPreferences.edit().putString("session cart", gson.toJson(cartDto));
+                    cartPreferences.edit().commit();
+                    finish();
+                }else{
+                    Toast.makeText(myApplication, "Please Login!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(UserCart.this, UserLogin.class));
+                }
             }
         });
 

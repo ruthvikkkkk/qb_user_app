@@ -13,6 +13,9 @@ public class MyApplication extends Application {
 
     Retrofit cartRetrofit;
 
+    static Boolean isGuest = true;
+    static String email = "guest";
+
     @Override
     public void onCreate() {
         super.onCreate();

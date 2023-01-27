@@ -1,5 +1,7 @@
 package com.example.listenupuser;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,6 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.listenupuser.adapter.HomeProductsAdapter;
 import com.example.listenupuser.models.CartDto;
@@ -33,38 +38,14 @@ public class MainActivity extends AppCompatActivity implements HomeProductsAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //10.20.5.8:8089
+        MyApplication.isGuest = getSharedPreferences("init", MODE_PRIVATE).getBoolean("isGuest", true);
+        MyApplication.email = getSharedPreferences("init", MODE_PRIVATE).getString("email", "");
+
         MyApplication myApplication = (MyApplication) getApplication();
         Retrofit productRetrofit = myApplication.productRetrofit;
-        Retrofit cartRetrofit = myApplication.cartRetrofit;
         ProductApiInterface productApiInterface = productRetrofit.create(ProductApiInterface.class);
-        CartApiInterface cartApiInterface = cartRetrofit.create(CartApiInterface.class);
 
-        CartDto cartDto = new CartDto();
-        cartDto.setCartItems(new ArrayList<CartItem>());
-        cartDto.setCustomer(new Customer());
-        cartDto.setGuest(true);
-        SharedPreferences cartPreferences = getSharedPreferences("cart", MODE_PRIVATE);
-        SharedPreferences.Editor cartEditor = cartPreferences.edit();
-        cartEditor.commit();
-        Gson gson = new Gson();
-
-        if(cartPreferences.getString("session cart", null) == null) {
-            cartApiInterface.createCart(cartDto).enqueue(new Callback<CartDto>() {
-                @Override
-                public void onResponse(Call<CartDto> call, Response<CartDto> response) {
-                    CartDto cartResponseDto = response.body();
-                    cartEditor.putString("session cart", gson.toJson(cartResponseDto));
-                    cartEditor.commit();
-                    //Log.i("cart id" ,cartResponseDto.getCartId());
-                }
-
-                @Override
-                public void onFailure(Call<CartDto> call, Throwable t) {
-
-                }
-            });
-        }
+        ActionBar actionBar = getSupportActionBar();
 
         RecyclerView recyclerView = findViewById(R.id.rv_home);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -119,5 +100,134 @@ public class MainActivity extends AppCompatActivity implements HomeProductsAdapt
         Intent intent = new Intent(getApplicationContext(), SingleProductDetailsActivity.class);
         intent.putExtra("product", product);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.cart, menu);
+        MenuItem userItem = menu.findItem(R.id.user);
+        if(!MyApplication.isGuest){
+            userItem.setIcon(getDrawable(R.drawable.user_in));
+        }else{
+            userItem.setIcon(getDrawable(R.drawable.user_out));
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(item.getItemId() == R.id.cart){
+            startActivity(new Intent(MainActivity.this, UserCart.class));
+        }
+        else if(item.getItemId() == R.id.user){
+            if(item.getIcon().getConstantState().equals(getDrawable(R.drawable.user_out).getConstantState())) {
+                startActivity(new Intent(MainActivity.this, UserLogin.class));
+                //createCart(false);
+            }else{
+                MyApplication.isGuest = true;
+                MyApplication.email = "";
+                //createCart();
+                deleteSharedPreferences("cart");
+                deleteSharedPreferences("init");
+                CartApiInterface cartApiInterface = ((MyApplication) getApplication()).cartRetrofit.create(CartApiInterface.class);
+                cartApiInterface.deleteCart(MyApplication.email).enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Toast.makeText(MainActivity.this, response.body(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "cart deleted!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+                startActivity(new Intent(MainActivity.this, UserLogin.class));
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //createCart();
+        if(getSharedPreferences("init", MODE_PRIVATE).getAll().size() > 0) {
+            findViewById(R.id.user).setBackground(getDrawable(R.drawable.user_in));
+            findViewById(R.id.user).setForeground(getDrawable(R.drawable.user_in));
+        }
+        else {
+            findViewById(R.id.user).setForeground(getDrawable(R.drawable.user_out));
+            findViewById(R.id.user).setBackground(getDrawable(R.drawable.user_out));
+            //createCart();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        createCart();
+    }
+
+    public void createCart(){
+
+        MyApplication myApplication = (MyApplication) getApplication();
+        Retrofit cartRetrofit = myApplication.cartRetrofit;
+        CartApiInterface cartApiInterface = cartRetrofit.create(CartApiInterface.class);
+
+        Gson gson = new Gson();
+        SharedPreferences cartPreferences = getSharedPreferences("cart", MODE_PRIVATE);
+        SharedPreferences.Editor cartEditor = cartPreferences.edit();
+
+        if(!MyApplication.isGuest) {
+            CartDto cartDto = new CartDto();
+            cartDto = gson.fromJson(cartPreferences.getString("session cart", null), CartDto.class);
+            cartDto.setGuest(false);
+            cartDto.setCartId(MyApplication.email);
+            cartDto.getCustomer().setEmail(MyApplication.email);
+            cartApiInterface.createCart(cartDto).enqueue(new Callback<CartDto>() {
+                @Override
+                public void onResponse(Call<CartDto> call, Response<CartDto> response) {
+                    //CartDto cartDto = new CartDto();
+                    CartDto cartResponseDto = response.body();
+                    //MyApplication.email = cartResponseDto.getCartId();
+                    Log.i("user cart", cartResponseDto.toString());
+                }
+
+                @Override
+                public void onFailure(Call<CartDto> call, Throwable t) {
+
+                }
+            });
+            cartEditor.putString("session cart", gson.toJson(cartDto));
+        }else{
+            if(cartPreferences.getAll().size() == 0) {
+                CartDto cartDto = new CartDto();
+                cartDto.setCustomer(new Customer());
+                cartDto.setCartItems(new ArrayList<CartItem>());
+                cartDto.setGuest(true);
+                cartApiInterface.createCart(cartDto).enqueue(new Callback<CartDto>() {
+                    @Override
+                    public void onResponse(Call<CartDto> call, Response<CartDto> response) {
+                        CartDto guestCart = response.body();
+                        cartEditor.putString("session cart", gson.toJson(guestCart));
+                        cartEditor.commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<CartDto> call, Throwable t) {
+
+                    }
+                });
+            }else{
+
+            }
+
+            //customer.setEmail(MyApplication.email);
+            //cartDto.setCustomer(customer);
+        }
+
+        cartEditor.commit();
     }
 }

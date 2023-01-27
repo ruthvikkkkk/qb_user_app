@@ -29,4 +29,7 @@ public interface CartApiInterface {
 
     @DELETE("deleteAllCartItems/{id}")
     Call<Boolean> deleteItems(@Path("id") String cartId);
+
+    @DELETE("deleteCart/{id}")
+    Call<String> deleteCart(@Path("id") String cartId);
 }

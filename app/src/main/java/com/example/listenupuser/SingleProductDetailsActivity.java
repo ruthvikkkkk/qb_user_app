@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.listenupuser.models.CartDto;
@@ -89,36 +90,46 @@ public class SingleProductDetailsActivity extends AppCompatActivity {
         findViewById(R.id.bt_full_product_add_to_cart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CartItem cartItem = new CartItem();
-                ProductDetails productDetails = new ProductDetails();
+
                 Spinner spinner = findViewById(R.id.sp_full_product_quantity);
-                cartItem.setProductPrice(Integer.parseInt(String.valueOf(((TextView) findViewById(R.id.tv_full_product_price)).getText())));
-                cartItem.setQuantity(Integer.parseInt(String.valueOf(spinner.getSelectedItemId())));
-                cartItem.setSkuID(skuId[0]);
-                productDetails.setProductId(product.getProductID());
-                productDetails.setProductName(product.getProductName());
-                productDetails.setMerchantId(skuId[1]);
-                productDetails.setMerchantName(skuId[2]);
-                cartItem.setProductDetails(productDetails);
+                if(((TextView) findViewById(R.id.tv_full_product_qty)).getText().toString().equals("0")){
+                    Toast.makeText(myApplication, "Out of Stock!", Toast.LENGTH_SHORT).show();
+                }else{
+                    if(spinner.getSelectedItemId() > 0){
+                        CartItem cartItem = new CartItem();
+                        ProductDetails productDetails = new ProductDetails();
+                        cartItem.setProductPrice(Integer.parseInt(String.valueOf(((TextView) findViewById(R.id.tv_full_product_price)).getText())));
+                        cartItem.setQuantity(Integer.parseInt(String.valueOf(spinner.getSelectedItemId())));
+                        cartItem.setSkuID(skuId[0]);
+                        productDetails.setProductId(product.getProductID());
+                        productDetails.setProductName(product.getProductName());
+                        productDetails.setMerchantId(skuId[1]);
+                        productDetails.setMerchantName(skuId[2]);
+                        cartItem.setProductDetails(productDetails);
 
-                cartItem.setImage(product.getImageURL());
-                cart.getCartItems().add(cartItem);
-                cartEditor.putString("session cart", gson.toJson(cart));
-                cartEditor.commit();
-                cartApiInterface.addToCart(cart.getCartId() ,cartItem).enqueue(new Callback<List<CartItem>>() {
-                    @Override
-                    public void onResponse(Call<List<CartItem>> call, Response<List<CartItem>> response) {
-                        List<CartItem> cartItems = response.body();
+
+                        cartItem.setImage(product.getImageURL());
+                        cart.getCartItems().add(cartItem);
+                        cartEditor.putString("session cart", gson.toJson(cart));
+                        cartEditor.commit();
+                        cartApiInterface.addToCart(cart.getCartId() ,cartItem).enqueue(new Callback<List<CartItem>>() {
+                            @Override
+                            public void onResponse(Call<List<CartItem>> call, Response<List<CartItem>> response) {
+                                List<CartItem> cartItems = response.body();
 //                        Log.i("cart items", cartItems.toString());
-                    }
+                            }
 
-                    @Override
-                    public void onFailure(Call<List<CartItem>> call, Throwable t) {
+                            @Override
+                            public void onFailure(Call<List<CartItem>> call, Throwable t) {
 
+                            }
+                        });
+                        //Intent intent = new Intent(getApplicationContext(), UserCart.class);
+                        startActivity(new Intent(getApplicationContext(), UserCart.class));
+                    }else{
+                        Toast.makeText(myApplication, "Quantity cannot be 0!", Toast.LENGTH_SHORT).show();
                     }
-                });
-                //Intent intent = new Intent(getApplicationContext(), UserCart.class);
-                startActivity(new Intent(getApplicationContext(), UserCart.class));
+                }
             }
         });
     }
@@ -126,30 +137,6 @@ public class SingleProductDetailsActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        int newQty = 0;
-        TextView qty = (TextView) findViewById(R.id.tv_full_product_qty);
-        SharedPreferences sharedPreferences = getSharedPreferences("cart", MODE_PRIVATE);
-//        CartDto cartDto = new Gson().fromJson(sharedPreferences.getString("session cart", null), CartDto.class);
-//        for(CartItem cartItem : cartDto.getCartItems()){
-//            if(cartItem.getProductDetails().getProductName().equals(String.valueOf(((TextView) findViewById(R.id.tv_full_product_name)).getText()))){
-//                newQty = cartItem.getQuantity();
-//            }
-//        }
-//
-//        int oldQty = Integer.parseInt(qty.getText().toString());
-//        qty.setText(oldQty-newQty+"");
-//
-//        List<String> qtyArray = new ArrayList<>();
-//        qtyArray.add("quantity");
-//        for(int i = 1; i <= (oldQty-newQty); i++)
-//            qtyArray.add(i+"");
-//
-//        Spinner qtySpinner = ((Spinner) findViewById(R.id.sp_full_product_quantity));
-//        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, qtyArray);
-//        qtySpinner.setVisibility(View.VISIBLE);
-//        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        qtySpinner.setAdapter(arrayAdapter);
-//        arrayAdapter.notifyDataSetChanged();
 
         MyApplication myApplication = (MyApplication) getApplication();
         Retrofit stockRetrofit = myApplication.stockRetrofit;
