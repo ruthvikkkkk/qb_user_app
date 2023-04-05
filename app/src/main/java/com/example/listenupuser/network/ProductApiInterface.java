@@ -1,6 +1,7 @@
 package com.example.listenupuser.network;
 
 import com.example.listenupuser.models.Product;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -12,4 +13,7 @@ public interface ProductApiInterface {
 
     @GET("get/category/{id}")
     Call<List<Product>> getByCategory(@Path("id") String categoryId);
+
+    @GET("searchProduct/{searchTerm}")
+    Call<List<Product>> getBySearch(@Path("searchTerm") String searchTerm);
 }

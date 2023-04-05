@@ -13,8 +13,10 @@ public class MyApplication extends Application {
 
     Retrofit cartRetrofit;
 
+    Retrofit searchRetrofit;
+
     static Boolean isGuest = true;
-    static String email = "guest";
+    static String email = "guests";
 
     @Override
     public void onCreate() {
@@ -36,6 +38,12 @@ public class MyApplication extends Application {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(Constants.CART_HOST)
+                .build();
+
+        searchRetrofit = new Retrofit.Builder()
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Constants.SEARCH_HOST)
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.listenupuser;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -37,6 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
 
         etMail = findViewById(R.id.et_register_email);
         etPass = findViewById(R.id.et_register_pass);

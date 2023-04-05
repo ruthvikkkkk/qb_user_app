@@ -21,12 +21,12 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/tv_cart_product_name"
+            android:id="@+id/tv_cart_product_name1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
             android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/tv_cart_product_qty"
+            app:layout_constraintBottom_toTopOf="@+id/tv_cart_product_qty1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/guideline15"
@@ -40,31 +40,31 @@
             app:layout_constraintGuide_percent="0.6" />
 
         <TextView
-            android:id="@+id/tv_cart_product_qty"
+            android:id="@+id/tv_cart_product_qty1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
             android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/tv_cart_product_price"
+            app:layout_constraintBottom_toTopOf="@+id/tv_cart_product_price1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/guideline15"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cart_product_name" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_cart_product_name1" />
 
         <TextView
-            android:id="@+id/tv_cart_product_price"
+            android:id="@+id/tv_cart_product_price1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
             android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/tv_cart_merchant_name"
+            app:layout_constraintBottom_toTopOf="@+id/tv_cart_merchant_name1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/guideline15"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cart_product_qty" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_cart_product_qty1" />
 
         <TextView
-            android:id="@+id/tv_cart_merchant_name"
+            android:id="@+id/tv_cart_merchant_name1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
@@ -73,6 +73,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/guideline15"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cart_product_price" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_cart_product_price1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

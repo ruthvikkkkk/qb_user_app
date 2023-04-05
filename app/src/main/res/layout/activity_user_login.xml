@@ -1,83 +1,89 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserLogin">
+    android:layout_margin="20dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
 
     <EditText
         android:id="@+id/et_sign_in_email"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Enter Email"
+        android:layout_margin="10dp"
+        android:background="@drawable/edit_text_shape"
+        android:drawablePadding="10dp"
+        android:hint="Email"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/et_sign_in_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline20" />
+        android:padding="15dp"
+        android:textColor="@color/primary"
+        android:textColorHighlight="@color/primary" />
 
     <EditText
         android:id="@+id/et_sign_in_password"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Enter Password"
+        android:layout_margin="10dp"
+        android:background="@drawable/edit_text_shape"
+        android:drawablePadding="10dp"
+        android:hint="Password"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/tv_sign_in_forgot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_sign_in_email" />
-
-    <TextView
-        android:id="@+id/tv_sign_in_forgot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Forgot Password ?"
-        android:textColor="@color/blue"
-        app:layout_constraintBottom_toTopOf="@+id/bt_sign_in_sign_in"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_sign_in_password" />
-
-    <TextView
-        android:id="@+id/tv_sign_in_sign_up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Not yet registered ?"
-        android:textColor="@color/blue"
-        app:layout_constraintBottom_toBottomOf="@id/guideline19"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bt_sign_in_sign_in" />
+        android:padding="15dp"
+        android:textColor="@color/primary"
+        android:textColorHighlight="@color/primary" />
 
     <Button
         android:id="@+id/bt_sign_in_sign_in"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log In"
-        app:layout_constraintBottom_toTopOf="@+id/tv_sign_in_sign_up"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_sign_in_forgot" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_shape"
+        android:padding="15dp"
+        android:shadowColor="@android:color/transparent"
+        android:text="Log In" />
+
+    <Button
+        android:id="@+id/bt_sign_in_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_shape_color"
+        android:padding="15dp"
+        android:shadowColor="@android:color/transparent"
+        android:text="Sign Up"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tv_sign_in_forgot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:drawablePadding="6dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Forgot Password ?"
+        android:textColor="@color/primary" />
+
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:id="@+id/bottom_navigation_bar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:background="@drawable/shape_bar"-->
+<!--        app:menu="@menu/menu_bar" />-->
+</LinearLayout>

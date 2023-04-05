@@ -3,17 +3,22 @@ package com.example.listenupuser;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.listenupuser.adapter.HomeProductsAdapter;
 import com.example.listenupuser.models.CartDto;
 import com.example.listenupuser.models.CartItem;
@@ -21,11 +26,12 @@ import com.example.listenupuser.models.Customer;
 import com.example.listenupuser.models.Product;
 import com.example.listenupuser.network.CartApiInterface;
 import com.example.listenupuser.network.ProductApiInterface;
+import com.example.listenupuser.network.SearchApiInterface;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,22 +39,66 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements HomeProductsAdapter.IProductCommunicator {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        MyApplication.isGuest = getSharedPreferences("init", MODE_PRIVATE).getBoolean("isGuest", true);
-        MyApplication.email = getSharedPreferences("init", MODE_PRIVATE).getString("email", "");
+        ActionBar actionBar = getSupportActionBar();
+        //actionBar.hide();
+        actionBar.setDisplayShowTitleEnabled(false);
+        createCart();
 
         MyApplication myApplication = (MyApplication) getApplication();
         Retrofit productRetrofit = myApplication.productRetrofit;
         ProductApiInterface productApiInterface = productRetrofit.create(ProductApiInterface.class);
 
-        ActionBar actionBar = getSupportActionBar();
-
         RecyclerView recyclerView = findViewById(R.id.rv_home);
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        ImageSlider imageSlider = findViewById(R.id.image_slider);
+        List<SlideModel> slideModels = new ArrayList<>();
+        slideModels.add(new SlideModel("https://m.media-amazon.com/images/I/81H-mS3Y1pL._SX679_.jpg", "Radios", null));
+        slideModels.add(new SlideModel("https://m.media-amazon.com/images/I/718ArKRWI3S._SY879_.jpg", "Speakers", null));
+        slideModels.add(new SlideModel("https://m.media-amazon.com/images/I/61+3f5q7T6S._SX679_.jpg", "Wireless", null));
+        slideModels.add(new SlideModel("https://m.media-amazon.com/images/I/61BsLMD3u2S._SX679_.jpg", "Wired", null));
+        slideModels.add(new SlideModel("https://m.media-amazon.com/images/I/41XOA-lcsCL._SX300_SY300_QL70_FMwebp_.jpg", "Sound Bar", null));
+
+        imageSlider.setImageList(slideModels);
+        imageSlider.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onItemSelected(int i) {
+                Intent intent = new Intent(MainActivity.this, ProductsByCategoryActivity.class);
+
+                switch (i){
+                    case 0:
+                        intent.putExtra("category", "radio");
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        intent.putExtra("category", "speaker");
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        intent.putExtra("category", "nwired");
+                        startActivity(intent);
+                        break;
+                    case 3:
+                        intent.putExtra("category", "wired");
+                        startActivity(intent);
+                        break;
+                    case 4:
+                        intent.putExtra("category", "soundbar");
+                        startActivity(intent);
+                        break;
+
+                }
+            }
+        });
+
+        MyApplication.isGuest = getSharedPreferences("init", MODE_PRIVATE).getBoolean("isGuest", true);
+        MyApplication.email = getSharedPreferences("init", MODE_PRIVATE).getString("email", "");
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 
         productApiInterface.getAll().enqueue(new Callback<List<Product>>() {
             @Override
@@ -67,31 +117,24 @@ public class MainActivity extends AppCompatActivity implements HomeProductsAdapt
             }
         });
 
-        //recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
-        Intent intent = new Intent(MainActivity.this, ProductsByCategoryActivity.class);
-        findViewById(R.id.iv_home_radio).setOnClickListener(v -> {
-            intent.putExtra("category", "radio");
-            startActivity(intent);
-        });
+        BottomNavigationView navigationView = findViewById(R.id.bottom_navigation_bar);
+        navigationView.setSelectedItemId(R.id.item_home_icon);
 
-        findViewById(R.id.iv_home_wired).setOnClickListener(v -> {
-            intent.putExtra("category", "wired");
-            startActivity(intent);
-        });
+        navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        findViewById(R.id.iv_home_speaker).setOnClickListener(v -> {
-            intent.putExtra("category", "speaker");
-            startActivity(intent);
-        });
-
-        findViewById(R.id.iv_home_wireless).setOnClickListener(v -> {
-            intent.putExtra("category", "nwired");
-            startActivity(intent);
-        });
-
-        findViewById(R.id.iv_home_soundbar).setOnClickListener(v -> {
-            intent.putExtra("category", "soundbar");
-            startActivity(intent);
+                switch(item.getItemId())
+                {
+                    case R.id.item_cart_icon:
+                        startActivity(new Intent(getApplicationContext(),UserCart.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                    case R.id.item_home_icon:
+                        return true;
+                }
+                return false;
+            }
         });
     }
 
@@ -103,71 +146,60 @@ public class MainActivity extends AppCompatActivity implements HomeProductsAdapt
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        createCart();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.cart, menu);
-        MenuItem userItem = menu.findItem(R.id.user);
-        if(!MyApplication.isGuest){
-            userItem.setIcon(getDrawable(R.drawable.user_in));
-        }else{
-            userItem.setIcon(getDrawable(R.drawable.user_out));
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_bar, menu);
+
+        MenuItem searchViewItem = menu.findItem(R.id.search_bar);
+        MenuItem loggedInItem = menu.findItem(R.id.user_logged_in_icon);
+        MenuItem loggedOutItem = menu.findItem(R.id.user_logged_out_icon);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchViewItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchProducts(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchProducts(newText);
+                return false;
+            }
+        });
+
+        if(getSharedPreferences("init", MODE_PRIVATE).getAll().size() > 0) {
+            //actionBar.getCustomView().findViewById(R.id.user_logged_out_icon).setVisibility(View.INVISIBLE);
+            loggedOutItem.setVisible(false);
         }
+        else {
+            //actionBar.getCustomView().findViewById(R.id.user_logged_in_icon).setVisibility(View.INVISIBLE);
+            loggedInItem.setVisible(false);
+        }
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        if(item.getItemId() == R.id.cart){
-            startActivity(new Intent(MainActivity.this, UserCart.class));
+        if(item.getItemId() == R.id.user_logged_out_icon){
+            startActivity(new Intent(MainActivity.this, UserLogin.class));
+            return true;
+        }else if(item.getItemId() == R.id.user_logged_in_icon){
+//            deleteSharedPreferences("init");
+//            finish();
+            startActivity(new Intent(getApplicationContext(), UserDetails.class));
+            return true;
         }
-        else if(item.getItemId() == R.id.user){
-            if(item.getIcon().getConstantState().equals(getDrawable(R.drawable.user_out).getConstantState())) {
-                startActivity(new Intent(MainActivity.this, UserLogin.class));
-                //createCart(false);
-            }else{
-                MyApplication.isGuest = true;
-                MyApplication.email = "";
-                //createCart();
-                deleteSharedPreferences("cart");
-                deleteSharedPreferences("init");
-                CartApiInterface cartApiInterface = ((MyApplication) getApplication()).cartRetrofit.create(CartApiInterface.class);
-                cartApiInterface.deleteCart(MyApplication.email).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        Toast.makeText(MainActivity.this, response.body(), Toast.LENGTH_SHORT).show();
-                        Toast.makeText(MainActivity.this, "cart deleted!", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-
-                    }
-                });
-                startActivity(new Intent(MainActivity.this, UserLogin.class));
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        //createCart();
-        if(getSharedPreferences("init", MODE_PRIVATE).getAll().size() > 0) {
-            findViewById(R.id.user).setBackground(getDrawable(R.drawable.user_in));
-            findViewById(R.id.user).setForeground(getDrawable(R.drawable.user_in));
-        }
-        else {
-            findViewById(R.id.user).setForeground(getDrawable(R.drawable.user_out));
-            findViewById(R.id.user).setBackground(getDrawable(R.drawable.user_out));
-            //createCart();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        createCart();
+        return false;
     }
 
     public void createCart(){
@@ -230,4 +262,38 @@ public class MainActivity extends AppCompatActivity implements HomeProductsAdapt
 
         cartEditor.commit();
     }
+
+    public List<Product> searchProducts(String searchQuery){
+
+
+        MyApplication myApplication = (MyApplication) getApplication();
+        Retrofit searchRetrofit = myApplication.searchRetrofit;
+        SearchApiInterface searchApiInterface = searchRetrofit.create(SearchApiInterface.class);
+
+        RecyclerView recyclerView = findViewById(R.id.rv_home);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        List<Product> products = new ArrayList<>();
+        if(searchQuery.equals(""))
+            searchQuery = "bass";
+        searchApiInterface.searchItems(searchQuery).enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    products.addAll(response.body());
+                    Log.i("products", products.toString());
+                    recyclerView.setAdapter(new HomeProductsAdapter(products, MainActivity.this));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                Log.i("failure", t.getLocalizedMessage());
+            }
+        });
+
+        return products;
+    }
+
+
 }

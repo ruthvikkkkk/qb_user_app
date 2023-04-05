@@ -1,7 +1,6 @@
 package com.example.listenupuser.models;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class CartItem implements Serializable {
@@ -9,6 +8,8 @@ public class CartItem implements Serializable {
 	@SerializedName("quantity")
 	private int quantity;
 
+	@SerializedName("total_quantity")
+	private int totalQuantity;
 	@SerializedName("sku_ID")
 	private String skuID;
 
@@ -20,6 +21,14 @@ public class CartItem implements Serializable {
 
 	@SerializedName("image")
 	private String image;
+
+	public int getTotalQuantity() {
+		return totalQuantity;
+	}
+
+	public void setTotalQuantity(int totalQuantity) {
+		this.totalQuantity = totalQuantity;
+	}
 
 	public void setImage(String image){this.image = image;}
 	public String getImage(){return this.image;}

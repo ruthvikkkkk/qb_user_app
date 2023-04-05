@@ -32,4 +32,7 @@ public interface CartApiInterface {
 
     @DELETE("deleteCart/{id}")
     Call<String> deleteCart(@Path("id") String cartId);
+
+    @GET("history/{email}")
+    Call<List<Order>> orderHistory(@Path("email") String email);
 }

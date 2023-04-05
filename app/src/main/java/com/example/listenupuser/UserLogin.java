@@ -1,12 +1,14 @@
 package com.example.listenupuser;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,18 +17,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class UserLogin extends AppCompatActivity {
 
     private EditText etMail;
     private EditText etPass;
     private Button login;
-    private TextView signUp;
+    private Button signUp;
     private TextView forgot;
     private FirebaseAuth firebaseAuth;
 
@@ -34,18 +34,27 @@ public class UserLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
 
         etMail = findViewById(R.id.et_sign_in_email);
         etPass = findViewById(R.id.et_sign_in_password);
         login = findViewById(R.id.bt_sign_in_sign_in);
         forgot = findViewById(R.id.tv_sign_in_forgot);
-        signUp = findViewById(R.id.tv_sign_in_sign_up);
+        signUp = findViewById(R.id.bt_sign_in_sign_up);
         firebaseAuth = FirebaseAuth.getInstance();
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(UserLogin.this, RegisterActivity.class));
+            }
+        });
+        forgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UserLogin.this,ForgotActivity.class));
             }
         });
 
@@ -106,4 +115,5 @@ public class UserLogin extends AppCompatActivity {
             }
         });
     }
+
 }

@@ -3,6 +3,7 @@ package com.example.listenupuser.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ public class HomeProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_product_recycler, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_product_recycler_card, parent, false);
         return new ProductViewHolder(view);
     }
 
@@ -55,11 +56,18 @@ public class HomeProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     communicator.openSingleProductDetail(products.get(getAdapterPosition()));
                 }
             });
+
+            ((Button) view.findViewById(R.id.bt_product_card_click)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    communicator.openSingleProductDetail(products.get(getAdapterPosition()));
+                }
+            });
         }
 
         public void productBind(Product product){
-            ((TextView) view.findViewById(R.id.tv_home_product_name)).setText(product.getCreatedBy().toString());
-            ((TextView) view.findViewById(R.id.tv_home_product_category)).setText(product.getProductName());
+            ((TextView) view.findViewById(R.id.tv_home_product_name)).setText(product.getProductName());
+//            ((TextView) view.findViewById(R.id.tv_home_product_category)).setText(product.getProductCategory().getCategoryName());
             Glide.with(view.getContext()).load(product.getImageURL()).into(((ImageView) view.findViewById(R.id.iv_home_product_image)));
         }
     }

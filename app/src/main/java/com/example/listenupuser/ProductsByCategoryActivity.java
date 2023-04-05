@@ -1,5 +1,6 @@
 package com.example.listenupuser;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,11 +23,13 @@ import retrofit2.Retrofit;
 
 public class ProductsByCategoryActivity extends AppCompatActivity implements HomeProductsAdapter.IProductCommunicator {
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products_by_category);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
 
         String category = getIntent().getStringExtra("category");
         ImageView imageView = findViewById(R.id.iv_product_category_category);
@@ -53,7 +56,7 @@ public class ProductsByCategoryActivity extends AppCompatActivity implements Hom
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 List<Product> products = response.body();
-                recyclerView.setAdapter(new HomeProductsAdapter(products, ProductsByCategoryActivity.this));
+                recyclerView.setAdapter(new HomeProductsAdapter(products , ProductsByCategoryActivity.this));
             }
 
             @Override

@@ -6,55 +6,50 @@ import java.io.Serializable;
 
 public class Product implements Serializable {
 
-	@SerializedName("createdDate")
-	private Object createdDate;
-
 	@SerializedName("updatedBy")
-	private Object updatedBy;
+	private String updatedBy;
 
 	@SerializedName("productID")
 	private String productID;
 
-	@SerializedName("createdBy")
-	private Object createdBy;
-
-	@SerializedName("deleteStatus")
-	private boolean deleteStatus;
+	@SerializedName("highBass")
+	private String highBass;
 
 	@SerializedName("productBrand")
 	private String productBrand;
 
-	@SerializedName("imageURL")
-	private String imageURL;
-
 	@SerializedName("updatedDate")
-	private Object updatedDate;
+	private String updatedDate;
 
 	@SerializedName("productName")
 	private String productName;
 
-	@SerializedName("productDescription")
-	private String productDescription;
-
-	@SerializedName("productUSP")
-	private Object productUSP;
-
 	@SerializedName("productCategory")
 	private ProductCategory productCategory;
 
-	public void setCreatedDate(Object createdDate){
-		this.createdDate = createdDate;
-	}
+	@SerializedName("createdDate")
+	private String createdDate;
 
-	public Object getCreatedDate(){
-		return createdDate;
-	}
+	@SerializedName("waterResistant")
+	private String waterResistant;
 
-	public void setUpdatedBy(Object updatedBy){
+	@SerializedName("createdBy")
+	private String createdBy;
+
+	@SerializedName("imageURL")
+	private String imageURL;
+
+	@SerializedName("aptX")
+	private String aptX;
+
+	@SerializedName("productDescription")
+	private String productDescription;
+
+	public void setUpdatedBy(String updatedBy){
 		this.updatedBy = updatedBy;
 	}
 
-	public Object getUpdatedBy(){
+	public String getUpdatedBy(){
 		return updatedBy;
 	}
 
@@ -66,20 +61,12 @@ public class Product implements Serializable {
 		return productID;
 	}
 
-	public void setCreatedBy(Object createdBy){
-		this.createdBy = createdBy;
+	public void setHighBass(String highBass){
+		this.highBass = highBass;
 	}
 
-	public Object getCreatedBy(){
-		return createdBy;
-	}
-
-	public void setDeleteStatus(boolean deleteStatus){
-		this.deleteStatus = deleteStatus;
-	}
-
-	public boolean isDeleteStatus(){
-		return deleteStatus;
+	public String getHighBass(){
+		return highBass;
 	}
 
 	public void setProductBrand(String productBrand){
@@ -90,19 +77,11 @@ public class Product implements Serializable {
 		return productBrand;
 	}
 
-	public void setImageURL(String imageURL){
-		this.imageURL = imageURL;
-	}
-
-	public String getImageURL(){
-		return imageURL;
-	}
-
-	public void setUpdatedDate(Object updatedDate){
+	public void setUpdatedDate(String updatedDate){
 		this.updatedDate = updatedDate;
 	}
 
-	public Object getUpdatedDate(){
+	public String getUpdatedDate(){
 		return updatedDate;
 	}
 
@@ -114,22 +93,6 @@ public class Product implements Serializable {
 		return productName;
 	}
 
-	public void setProductDescription(String productDescription){
-		this.productDescription = productDescription;
-	}
-
-	public String getProductDescription(){
-		return productDescription;
-	}
-
-	public void setProductUSP(Object productUSP){
-		this.productUSP = productUSP;
-	}
-
-	public Object getProductUSP(){
-		return productUSP;
-	}
-
 	public void setProductCategory(ProductCategory productCategory){
 		this.productCategory = productCategory;
 	}
@@ -138,22 +101,71 @@ public class Product implements Serializable {
 		return productCategory;
 	}
 
+	public void setCreatedDate(String createdDate){
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedDate(){
+		return createdDate;
+	}
+
+	public void setWaterResistant(String waterResistant){
+		this.waterResistant = waterResistant;
+	}
+
+	public String getWaterResistant(){
+		return waterResistant;
+	}
+
+	public void setCreatedBy(String createdBy){
+		this.createdBy = createdBy;
+	}
+
+	public String getCreatedBy(){
+		return createdBy;
+	}
+
+	public void setImageURL(String imageURL){
+		this.imageURL = imageURL;
+	}
+
+	public String getImageURL(){
+		return imageURL;
+	}
+
+	public void setAptX(String aptX){
+		this.aptX = aptX;
+	}
+
+	public String getAptX(){
+		return aptX;
+	}
+
+	public void setProductDescription(String productDescription){
+		this.productDescription = productDescription;
+	}
+
+	public String getProductDescription(){
+		return productDescription;
+	}
+
 	@Override
  	public String toString(){
 		return 
 			"Product{" + 
-			"createdDate = '" + createdDate + '\'' + 
-			",updatedBy = '" + updatedBy + '\'' + 
+			"updatedBy = '" + updatedBy + '\'' + 
 			",productID = '" + productID + '\'' + 
-			",createdBy = '" + createdBy + '\'' + 
-			",deleteStatus = '" + deleteStatus + '\'' + 
+			",highBass = '" + highBass + '\'' + 
 			",productBrand = '" + productBrand + '\'' + 
-			",imageURL = '" + imageURL + '\'' + 
 			",updatedDate = '" + updatedDate + '\'' + 
 			",productName = '" + productName + '\'' + 
-			",productDescription = '" + productDescription + '\'' + 
-			",productUSP = '" + productUSP + '\'' + 
 			",productCategory = '" + productCategory + '\'' + 
+			",createdDate = '" + createdDate + '\'' + 
+			",waterResistant = '" + waterResistant + '\'' + 
+			",createdBy = '" + createdBy + '\'' + 
+			",imageURL = '" + imageURL + '\'' + 
+			",aptX = '" + aptX + '\'' + 
+			",productDescription = '" + productDescription + '\'' + 
 			"}";
 		}
 }
